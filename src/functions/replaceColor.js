@@ -1,5 +1,15 @@
 import { rgbaToInt, intToRGBA } from 'jimp';
 
+/**
+ * Replaces a specified color in an image with a new color, within a given tolerance and margin.
+ *
+ * @param {import("@jimp/types").JimpClass} image - The image object to process.
+ * @param {Object} oldColor - The color to be replaced, as an object with r, g, b, and optional a properties.
+ * @param {Object} newColor - The new color to apply, as an object with r, g, b, and optional a properties.
+ * @param {number} [tolerance=30] - The tolerance level for color matching (default is 30).
+ * @param {number} [margin=0] - The margin around the matching pixel to also replace (default is 0).
+ * @returns {Object} - The modified image object.
+ */
 export function replaceColor(image, oldColor, newColor, tolerance = 30, margin = 0) {
     // Convert RGB objects to integer values
     const oldColorInt = rgbaToInt(oldColor.r, oldColor.g, oldColor.b, oldColor.a ?? 255);
