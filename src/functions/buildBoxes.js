@@ -8,7 +8,7 @@ import { floodFill } from './floodFill.js';
  * @param {number} height - The height of the mask.
  * @returns {Array<Object>} An array of box objects, each representing a contiguous area in the mask.
  */
-export const buildBoxes = (mask, width, height) => {
+export const buildBoxes = (mask, width, height, boxMargin = 5) => {
     let boxes = [];
     // Keep track of visited pixels
     let visited = Array.from({ length: height }, () => Array(width).fill(false));
@@ -16,7 +16,13 @@ export const buildBoxes = (mask, width, height) => {
         for (let x = 0; x < width; x++) {
             if (mask[y][x] && !visited[y][x]) {
                 const { box, visited: newVisited } = floodFill(x, y, mask, visited, width, height);
-                boxes.push(box);
+                // Expand box 
+                let [minX, minY, w, h] = box;
+                const newX = Math.max(minX - boxMargin, 0);
+                const newY = Math.max(minY - boxMargin, 0);
+                const newWidth = Math.min(w + boxMargin * 2, width - newX);
+                const newHeight = Math.min(h + boxMargin * 2, height - newY);
+                boxes.push([newX, newY, newWidth, newHeight]);
                 visited = newVisited;
             }
         }
