@@ -1,5 +1,19 @@
-import { rectOverlap } from './rectOverlap.js';
-import { rectUnion } from './rectUnion.js';
+function rectOverlap(a, b, margin = 5) {
+    const [ax, ay, aw, ah] = a;
+    const [bx, by, bw, bh] = b;
+    return (ax < bx + bw + margin && ax + aw + margin > bx &&
+        ay < by + bh + margin && ay + ah + margin > by);
+}
+
+function rectUnion(a, b) {
+    const [ax, ay, aw, ah] = a;
+    const [bx, by, bw, bh] = b;
+    const x = Math.min(ax, bx);
+    const y = Math.min(ay, by);
+    const w = Math.max(ax + aw, bx + bw) - x;
+    const h = Math.max(ay + ah, by + bh) - y;
+    return [x, y, w, h];
+}
 
 // Helper: Merge touching/overlapping rectangles
 export function mergeRectangles(rects, margin = 5) {

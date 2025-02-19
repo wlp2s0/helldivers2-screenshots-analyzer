@@ -17,6 +17,7 @@ export const buildMask = (image, color, tolerance) => {
         const r = this.bitmap.data[idx + 0];
         const g = this.bitmap.data[idx + 1];
         const b = this.bitmap.data[idx + 2];
+
         if (Math.abs(r - color.r) <= tolerance &&
             Math.abs(g - color.g) <= tolerance &&
             Math.abs(b - color.b) <= tolerance) {
