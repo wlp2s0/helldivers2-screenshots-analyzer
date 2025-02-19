@@ -1,3 +1,4 @@
+
 /**
  * Builds a mask for an image based on a specified color and tolerance.
  *

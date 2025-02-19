@@ -12,9 +12,6 @@ import { cropImage } from './functions/cropImage.js';
 import { replaceColor } from './functions/replaceColor.js';
 import { getColorPercentage } from './functions/getColorPercentage.js';
 
-// const fontWhite = await loadFont(SANS_16_WHITE);
-// const fontBlack = await loadFont(SANS_16_BLACK);
-
 const exposeIconInBox = (box, originalImage, targetColor, tolerance) => {
 	const [x, y, w, h] = box;
 	const image = originalImage.clone().crop({ x, y, w, h });
@@ -31,6 +28,26 @@ const yellow = rgbaToInt(255, 255, 0, 255);
 const cyan = rgbaToInt(0, 255, 255, 255);
 const magenta = rgbaToInt(255, 0, 255, 255);
 
+/**
+ * Parses an image to detect and classify boxes based on color and size thresholds.
+ *
+ * @param {string} sourcePath - The path to the source image.
+ * @param {string} targetPath - The path to save the modified image.
+ * @param {Object} targetColor - The target color to detect in the image.
+ * @param {number} [colorTolerance=30] - The tolerance for color matching.
+ * @param {number} [mergeThreshold=1] - The threshold for merging close rectangles.
+ * @param {number} [cropRatioWidth=1] - The width ratio for cropping the image.
+ * @param {number} [cropRatioHeight=1] - The height ratio for cropping the image.
+ * @param {number} [minWidthThreshold=20] - The minimum width threshold for detected boxes.
+ * @param {number} [minHeightThreshold=20] - The minimum height threshold for detected boxes.
+ * @param {number} [maxWidthThreshold=150] - The maximum width threshold for detected boxes.
+ * @param {number} [maxHeightThreshold=150] - The maximum height threshold for detected boxes.
+ * @returns {Promise<Object>} An object containing the count of different types of boxes detected.
+ * @returns {number} match.success - The count of successfully detected boxes.
+ * @returns {number} match.plain - The count of plain color boxes.
+ * @returns {number} match.small - The count of small boxes.
+ * @returns {number} match.big - The count of big boxes.
+ */
 const parseImage = async (
 	sourcePath,
 	targetPath,
@@ -44,20 +61,26 @@ const parseImage = async (
 	maxWidthThreshold = 150,
 	maxHeightThreshold = 150
 ) => {
+	// Read the source image.
 	const image = await Jimp.read(sourcePath);
 
+	// Crop the image based on width and height ratios.
 	const { croppedImage } = await cropImage(image, targetPath, cropRatioWidth, cropRatioHeight);
+	// Retrieve dimensions from the cropped image.
 	const { width, height } = croppedImage.bitmap;
 
+	// Create a mask highlighting areas matching the target color.
 	const mask = buildMask(croppedImage, targetColor, colorTolerance);
+	// Identify potential boxes from the mask.
 	const boxes = buildBoxes(mask, width, height);
+	// Merge boxes that are close to each other.
 	const mergedBoxes = mergeRectangles(boxes, mergeThreshold);
+	// Filter and classify boxes (remove nested, check size, expose icon, evaluate plain color percentage).
 	const filteredBoxes = mergedBoxes
-		// Remove nested boxes
+		// Remove nested boxes.
 		.filter((box, i, allElements) => {
 			const [x, y, w, h] = box;
 			return !allElements.some((other, j) => {
-				// Skip the same box
 				if (i === j) {
 					return false;
 				}
@@ -65,49 +88,54 @@ const parseImage = async (
 				return (x >= ox && y >= oy && x + w <= ox + ow && y + h <= oy + oh);
 			});
 		})
-		// Check if the box is too small
+		// Mark boxes too small.
 		.map((box) => ({
 			box,
 			isSmallBox: box[2] < minWidthThreshold || box[3] < minHeightThreshold
 		}))
-		// Check if the box is too big
+		// Mark boxes too big.
 		.map(({ box, ...rest }) => ({
 			...rest,
 			box,
 			isBigBox: box[2] > maxWidthThreshold || box[3] > maxHeightThreshold
 		}))
+		// Extract sub-image for each box.
 		.map(({ box, ...rest }) => ({
 			...rest,
 			box,
 			image: exposeIconInBox(box, croppedImage, targetColor, colorTolerance + 20)
 		}))
+		// Determine if box image is plain white.
 		.map(({ image, ...rest }) => ({
 			...rest,
 			image,
 			isPlainColor: getColorPercentage(image, { r: 255, g: 255, b: 255 }, 0) >= 90
-		}))
+		}));
 
+	// Clone the cropped image to draw on.
 	let modifiedImage = croppedImage.clone();
 
+	// Initialize counters for different box types.
 	const match = {
 		success: 0,
 		plain: 0,
 		small: 0,
 		big: 0,
-	}
+	};
 
+	// Draw rectangles around each detected box and update counters accordingly.
 	filteredBoxes.forEach(({ box, isPlainColor, isSmallBox, isBigBox }) => {
 		const [x, y, w, h] = box;
 
 		let color = null;
 		if (isPlainColor) {
-			color = red
+			color = red;
 			match.plain++;
 		} else if (isSmallBox) {
-			color = blue
+			color = blue;
 			match.small++;
 		} else if (isBigBox) {
-			color = yellow
+			color = yellow;
 			match.big++;
 		} else {
 			color = green;
@@ -115,11 +143,14 @@ const parseImage = async (
 		}
 
 		modifiedImage = drawRectangle(modifiedImage, x, y, w, h, color, 2);
-	})
+	});
 
+	// Write the modified image to the target path.
 	await modifiedImage.write(targetPath);
+	// Return the classification counts.
 	return match;
 }
+
 
 // Define the target color to be used
 const colours = [
@@ -147,8 +178,7 @@ for (const { colour, label } of colours) {
 			await fs.mkdir(targetDir, { recursive: true });
 			const targetPath = path.join(targetDir, file);
 			const count = await parseImage(sourcePath, targetPath, colour);
-			console.log(`[${label}] Processed ${file} -> ${targetPath}`);
-			console.log(`[${label}] Success matches: ${count.success}, Plain: ${count.plain}, Small: ${count.small}, Big: ${count.big}`);
+			console.log(`[${label}] Processed file ${file} moved to ${targetPath} ||| Success matches: ${count.success}, Plain: ${count.plain}, Small: ${count.small}, Big: ${count.big}`);
 		} catch (error) {
 			console.error(`Error processing ${file}: ${error.message}`);
 			throw error;

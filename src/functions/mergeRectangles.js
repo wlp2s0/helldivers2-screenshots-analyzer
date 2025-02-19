@@ -1,3 +1,11 @@
+/**
+ * Determines if two rectangles overlap, considering an optional margin.
+ *
+ * @param {number[]} a - The first rectangle defined by [x, y, width, height].
+ * @param {number[]} b - The second rectangle defined by [x, y, width, height].
+ * @param {number} [margin=5] - The optional margin to consider around the rectangles.
+ * @returns {boolean} - Returns true if the rectangles overlap, otherwise false.
+ */
 function rectOverlap(a, b, margin = 5) {
     const [ax, ay, aw, ah] = a;
     const [bx, by, bw, bh] = b;
@@ -5,6 +13,13 @@ function rectOverlap(a, b, margin = 5) {
         ay < by + bh + margin && ay + ah + margin > by);
 }
 
+/**
+ * Computes the union of two rectangles.
+ *
+ * @param {number[]} a - The first rectangle represented as [x, y, width, height].
+ * @param {number[]} b - The second rectangle represented as [x, y, width, height].
+ * @returns {number[]} The smallest rectangle that contains both input rectangles, represented as [x, y, width, height].
+ */
 function rectUnion(a, b) {
     const [ax, ay, aw, ah] = a;
     const [bx, by, bw, bh] = b;
@@ -15,7 +30,13 @@ function rectUnion(a, b) {
     return [x, y, w, h];
 }
 
-// Helper: Merge touching/overlapping rectangles
+/**
+ * Merges overlapping rectangles with a specified margin.
+ *
+ * @param {Array<{x: number, y: number, width: number, height: number}>} rects - Array of rectangles to merge.
+ * @param {number} [margin=5] - The margin to consider for overlapping rectangles.
+ * @returns {Array<{x: number, y: number, width: number, height: number}>} - Array of merged rectangles.
+ */
 export function mergeRectangles(rects, margin = 5) {
     let merged = [...rects];
     let changed = true;

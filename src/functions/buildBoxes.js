@@ -1,3 +1,15 @@
+
+/**
+ * Performs a flood fill algorithm to find the bounding box of a contiguous region in a 2D grid.
+ *
+ * @param {number} sx - The starting x-coordinate.
+ * @param {number} sy - The starting y-coordinate.
+ * @param {boolean[][]} mask - A 2D array representing the grid where true indicates fillable cells.
+ * @param {boolean[][]} visited - A 2D array representing the cells that have already been visited.
+ * @param {number} width - The width of the grid.
+ * @param {number} height - The height of the grid.
+ * @returns {{ box: [number, number, number, number], visited: boolean[][] }} An object containing the bounding box of the filled region and the updated visited array.
+ */
 function floodFill(sx, sy, mask, visited, width, height) {
     const newVisited = visited.map(row => row.slice());
     const stack = [[sx, sy]];
@@ -23,13 +35,15 @@ function floodFill(sx, sy, mask, visited, width, height) {
 }
 
 
+
 /**
- * Generates an array of boxes from a given mask, width, and height.
+ * Generates bounding boxes around contiguous regions in a binary mask.
  *
- * @param {Array<Array<number>>} mask - A 2D array representing the mask where each element is either 0 or 1.
+ * @param {number[][]} mask - A 2D array representing the binary mask where 1 indicates the presence of a region and 0 indicates the absence.
  * @param {number} width - The width of the mask.
  * @param {number} height - The height of the mask.
- * @returns {Array<Object>} An array of box objects, each representing a contiguous area in the mask.
+ * @param {number} [boxMargin=5] - The margin to add around each bounding box.
+ * @returns {Array.<Array.<number>>} An array of bounding boxes, where each box is represented as an array [x, y, width, height].
  */
 export const buildBoxes = (mask, width, height, boxMargin = 5) => {
     let boxes = [];

@@ -1,4 +1,16 @@
-// Helper: Draw rectangle on image using pixel manipulation
+
+/**
+ * Draws a rectangle on the given image.
+ *
+ * @param {import("@jimp/types").JimpClass} originalImage - The original image object to draw on.
+ * @param {number} x - The x-coordinate of the top-left corner of the rectangle.
+ * @param {number} y - The y-coordinate of the top-left corner of the rectangle.
+ * @param {number} w - The width of the rectangle.
+ * @param {number} h - The height of the rectangle.
+ * @param {number} colorInt - The color of the rectangle in integer format.
+ * @param {number} [thickness=2] - The thickness of the rectangle's border.
+ * @returns {Object} The new image object with the rectangle drawn on it.
+ */
 export function drawRectangle(originalImage, x, y, w, h, colorInt, thickness = 2) {
     const newImage = originalImage.clone()
 
