@@ -112,6 +112,12 @@ const parseImage = async (
 			isPlainColor: getColorPercentage(image, { r: 255, g: 255, b: 255 }, 0) >= 90
 		}));
 
+	// Debug: Save each detected box as a separate image.
+	//for (const { box } of filteredBoxes) {
+	//	const [x, y, w, h] = box;
+	//	const image = croppedImage.clone().crop({ x, y, w, h });
+	//	await image.write(`./output/${x}-${y}-${w}-${h}.png`);
+	//}
 	// Clone the cropped image to draw on.
 	let modifiedImage = croppedImage.clone();
 
