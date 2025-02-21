@@ -8,7 +8,7 @@
  * @param {number} [cropRatioHeight=0.7] - The height ratio to crop the image. Default is 0.7.
  * @returns {Promise<Object>} - A promise that resolves to an object containing the cropped image.
  */
-export async function cropImage(image, targetPath, cropRatioWidth = 0.55, cropRatioHeight = 0.7) {
+export async function cropImage(image, cropRatioWidth = 0.55, cropRatioHeight = 0.7) {
     const { width, height } = image.bitmap;
 
     const cropWidth = Math.floor(width * cropRatioWidth);
@@ -17,6 +17,5 @@ export async function cropImage(image, targetPath, cropRatioWidth = 0.55, cropRa
     const cropY = Math.floor((height - cropHeight) / 2);
 
     const croppedImage = image.crop({ x: cropX, y: cropY, w: cropWidth, h: cropHeight });
-    await croppedImage.write(targetPath);
     return { croppedImage };
 }
