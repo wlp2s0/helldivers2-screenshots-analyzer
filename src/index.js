@@ -75,6 +75,9 @@ const parseImage = async ({
 
 	// Crop the image based on width and height ratios.
 	const { croppedImage } = await cropImage(image, cropRatioWidth, cropRatioHeight);
+	if (debug) {
+		await croppedImage.write(`./${BASE_DEBUG_DIRECTORY}/${filename}/${label}.0.cropped.png`);
+	}
 	// Retrieve dimensions from the cropped image.
 	const { width, height } = croppedImage.bitmap;
 
@@ -97,7 +100,7 @@ const parseImage = async ({
 				}
 			}
 		}
-		await maskImage.write(`./${BASE_DEBUG_DIRECTORY}/${filename}/${label}.mask.png`);
+		await maskImage.write(`./${BASE_DEBUG_DIRECTORY}/${filename}/${label}.1.mask.png`);
 	}
 
 	// Identify potential boxes from the mask using the dynamic margin threshold.
@@ -109,7 +112,7 @@ const parseImage = async ({
 			const [x, y, w, h] = box
 			imageBox = drawRectangle(imageBox, x, y, w, h, green, 2);
 		}
-		await imageBox.write(`./${BASE_DEBUG_DIRECTORY}/${filename}/${label}.boxes.png`);
+		await imageBox.write(`./${BASE_DEBUG_DIRECTORY}/${filename}/${label}.2.boxes.png`);
 	}
 
 	// Merge boxes that are close to each other using the dynamic merge threshold.
@@ -120,7 +123,7 @@ const parseImage = async ({
 			const [x, y, w, h] = box
 			imageMergedBox = drawRectangle(imageMergedBox, x, y, w, h, green, 2);
 		}
-		await imageMergedBox.write(`./${BASE_DEBUG_DIRECTORY}/${filename}/${label}.mergedBoxes.png`);
+		await imageMergedBox.write(`./${BASE_DEBUG_DIRECTORY}/${filename}/${label}.3.boxes.merged.png`);
 	}
 
 	// Filter and classify boxes (remove nested, check size, expose icon, evaluate plain color percentage).
@@ -169,11 +172,11 @@ const parseImage = async ({
 			}
 			const [x, y, w, h] = box;
 
-			const outputBox = croppedImage.clone().crop({ x, y, w, h });
-			await outputBox.write(`./${BASE_DEBUG_DIRECTORY}/${filename}/${label}.icon.${index}.png`);
+			// const outputBox = croppedImage.clone().crop({ x, y, w, h });
+			// await outputBox.write(`./${BASE_DEBUG_DIRECTORY}/${filename}/${label}.icon.${index}.png`);
 
 			const debugBox = image
-			await debugBox.write(`./${BASE_DEBUG_DIRECTORY}/${filename}/${label}.${index}.box.png`);
+			await debugBox.write(`./${BASE_DEBUG_DIRECTORY}/${filename}/${label}.4.${index}.box.png`);
 
 			index++;
 		}
@@ -223,7 +226,7 @@ const parseImage = async ({
 
 	// Write the modified image to the target path.
 	if (debug) {
-		await modifiedImage.write(`./${BASE_DEBUG_DIRECTORY}/${filename}/${label}.highlight.png`);
+		await modifiedImage.write(`./${BASE_DEBUG_DIRECTORY}/${filename}/${label}.5.highlight.png`);
 	}
 
 	// Return the classification counts.
