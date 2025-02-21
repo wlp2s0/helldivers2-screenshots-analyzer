@@ -243,7 +243,7 @@ const colours = [
 	}
 ];
 
-const BASE_SCREEN_DIRECTORY = './screen/debug';
+const BASE_SCREEN_DIRECTORY = './screenshots/debug';
 const files = await fs.readdir(BASE_SCREEN_DIRECTORY);
 
 await Promise.all(colours.map(async ({ colour: targetColor, label }) => {
