@@ -39,7 +39,7 @@ function floodFill(sx, sy, mask, visited, width, height) {
 /**
  * Generates bounding boxes around contiguous regions in a binary mask.
  *
- * @param {number[][]} mask - A 2D array representing the binary mask where 1 indicates the presence of a region and 0 indicates the absence.
+ * @param {boolean[][]} mask - A 2D array representing the binary mask where 1 indicates the presence of a region and 0 indicates the absence.
  * @param {number} width - The width of the mask.
  * @param {number} height - The height of the mask.
  * @param {number} [boxMargin=5] - The margin to add around each bounding box.
