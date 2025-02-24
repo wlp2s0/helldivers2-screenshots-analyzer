@@ -40,7 +40,7 @@ const magenta = rgbaToInt(255, 0, 255, 255);
  * @param {string} options.sourcePath - The path to the source image.
  * @param {Object} options.targetColor - The target color to detect in the image.
  * @param {number} [options.colorTolerance=45] - The tolerance for color matching.
- * @param {number} [options.mergeThresholdRatio=0.001] - The ratio for merging close boxes.
+ * @param {number} [options.minMergeThresholdRatio=0.001] - The ratio for merging close boxes.
  * @param {number} [options.marginThresholdRatio=0.005] - The ratio for determining the margin threshold.
  * @param {number} [options.cropRatioWidth=1] - The width ratio for cropping the image.
  * @param {number} [options.cropRatioHeight=1] - The height ratio for cropping the image.
@@ -56,9 +56,10 @@ const parseImage = async ({
 	label,
 	sourcePath,
 	targetColor,
-	colorTolerance = 45,
-	mergeThresholdRatio = 0.001,
-	marginThresholdRatio = 0.005,
+	colorTolerance = 255,
+	minMergeThresholdRatio = 0.001,
+	maxMergeThresholdRatio = 0.4,
+	marginThresholdRatio = 0.0025,
 	cropRatioWidth = 1,
 	cropRatioHeight = 1,
 	minWidthThresholdRatio = 0.02,
@@ -67,8 +68,12 @@ const parseImage = async ({
 	maxHeightThresholdRatio = 0.14,
 	debug = false
 }) => {
+	console.log(`[${label}] Processing ${filename}`);
+
 	// Read the source image.
 	const image = await Jimp.read(sourcePath);
+	console.log(`[${label}] Read image ${filename}`);
+
 	if (debug) {
 		await mkdir(`./${BASE_DEBUG_DIRECTORY}/${filename}`, { recursive: true });
 	}
@@ -81,7 +86,7 @@ const parseImage = async ({
 	// Retrieve dimensions from the cropped image.
 	const { width, height } = croppedImage.bitmap;
 
-	const { marginThreshold, mergeThreshold, minWidth, minHeight, maxWidth, maxHeight } = getThresholds({ dimension: height, mergeThresholdRatio, marginThresholdRatio, minWidthThresholdRatio, minHeightThresholdRatio, maxWidthThresholdRatio, maxHeightThresholdRatio });
+	const { marginThreshold, minMergeThreshold, maxMergeThreshold, minWidth, minHeight, maxWidth, maxHeight } = getThresholds({ dimension: height, minMergeThresholdRatio, maxMergeThresholdRatio, marginThresholdRatio, minWidthThresholdRatio, minHeightThresholdRatio, maxWidthThresholdRatio, maxHeightThresholdRatio });
 
 	// Create a mask highlighting areas matching the target color.
 	const mask = buildMask(croppedImage, targetColor, colorTolerance);
@@ -116,7 +121,7 @@ const parseImage = async ({
 	}
 
 	// Merge boxes that are close to each other using the dynamic merge threshold.
-	const mergedBoxes = mergeRectangles(boxes, mergeThreshold);
+	const mergedBoxes = mergeRectangles(boxes, minMergeThreshold, maxMergeThreshold);
 	if (debug) {
 		let imageMergedBox = maskImage.clone();
 		for (const box of mergedBoxes) {
@@ -161,7 +166,7 @@ const parseImage = async ({
 			...rest,
 			image,
 			isPlainColor: getColorPercentage(image, { r: 255, g: 255, b: 255 }, 0) > 90,
-			isNoisy: getColorPercentage(image, { r: 255, g: 255, b: 255 }, 0) < 10,
+			isNoisy: getColorPercentage(image, { r: 255, g: 255, b: 255 }, 0) < 15,
 		}));
 
 	if (debug) {
@@ -170,8 +175,8 @@ const parseImage = async ({
 			if (isPlainColor || isBigBox || isSmallBox || isNoisy) {
 				continue
 			}
-			const [x, y, w, h] = box;
 
+			// const [x, y, w, h] = box;
 			// const outputBox = croppedImage.clone().crop({ x, y, w, h });
 			// await outputBox.write(`./${BASE_DEBUG_DIRECTORY}/${filename}/${label}.icon.${index}.png`);
 
@@ -183,9 +188,11 @@ const parseImage = async ({
 	}
 
 	// Clone the cropped image to draw on.
-	let modifiedImage
+	let maskHighlightedImage
+	let originalHighlightedImage
 	if (debug) {
-		modifiedImage = maskImage.clone();
+		maskHighlightedImage = maskImage.clone();
+		originalHighlightedImage = croppedImage.clone();
 	}
 
 	// Initialize counters for different box types.
@@ -219,14 +226,18 @@ const parseImage = async ({
 			match.success++;
 		}
 
-		if (debug && modifiedImage) {
-			modifiedImage = drawRectangle(modifiedImage, x, y, w, h, color, 2);
+		if (debug && originalHighlightedImage) {
+			originalHighlightedImage = drawRectangle(originalHighlightedImage, x, y, w, h, color, 2);
+		}
+		if (debug && maskHighlightedImage) {
+			maskHighlightedImage = drawRectangle(maskHighlightedImage, x, y, w, h, color, 2);
 		}
 	});
 
 	// Write the modified image to the target path.
 	if (debug) {
-		await modifiedImage.write(`./${BASE_DEBUG_DIRECTORY}/${filename}/${label}.5.highlight.png`);
+		await maskHighlightedImage.write(`./${BASE_DEBUG_DIRECTORY}/${filename}/${label}.5.mask.highlight.png`);
+		await originalHighlightedImage.write(`./${BASE_DEBUG_DIRECTORY}/${filename}/${label}.5.highlight.png`);
 	}
 
 	// Return the classification counts.
@@ -246,7 +257,7 @@ const colours = [
 	}
 ];
 
-const BASE_SCREEN_DIRECTORY = './screenshots/debug';
+const BASE_SCREEN_DIRECTORY = './screenshots';
 const files = await fs.readdir(BASE_SCREEN_DIRECTORY);
 
 await Promise.all(colours.map(async ({ colour: targetColor, label }) => {
