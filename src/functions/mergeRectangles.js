@@ -33,26 +33,35 @@ function rectUnion(a, b) {
 /**
  * Merges overlapping rectangles with a specified margin.
  *
- * @param {Array<{x: number, y: number, width: number, height: number}>} rects - Array of rectangles to merge.
- * @param {number} [margin=5] - The margin to consider for overlapping rectangles.
+ * @param {Array<{x: number, y: number, width: number, height: number}>} rectangles - Array of rectangles to merge.
+ * @param {number} [minSize=5] - The margin to consider for overlapping rectangles.
+ * @param {number} [maxSize=Infinity] - The maximum size for the merged rectangles.
  * @returns {Array<{x: number, y: number, width: number, height: number}>} - Array of merged rectangles.
  */
-export function mergeRectangles(rects, margin = 5) {
-    let merged = [...rects];
+export function mergeRectangles(rectangles, minSize = 5, maxSize = 500) {
+    let merged = [...rectangles];
     let changed = true;
     while (changed) {
         changed = false;
         const newMerged = [];
         const used = new Array(merged.length).fill(false);
         for (let i = 0; i < merged.length; i++) {
-            if (used[i]) continue;
+            if (used[i]) {
+                continue;
+            }
             let current = merged[i];
             for (let j = i + 1; j < merged.length; j++) {
-                if (used[j]) continue;
-                if (rectOverlap(current, merged[j], margin)) {
-                    current = rectUnion(current, merged[j]);
-                    used[j] = true;
-                    changed = true;
+                if (used[j]) {
+                    continue;
+                }
+                if (rectOverlap(current, merged[j], minSize)) {
+                    const candidate = rectUnion(current, merged[j]);
+                    // Check candidate box dimensions: candidate[2] -> width, candidate[3] -> height.
+                    if (candidate[2] <= maxSize && candidate[3] <= maxSize) {
+                        current = candidate;
+                        used[j] = true;
+                        changed = true;
+                    }
                 }
             }
             newMerged.push(current);
