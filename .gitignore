@@ -5,3 +5,4 @@ output/
 debug/
 screenshots/
 dist/
+.rollup.cache/
