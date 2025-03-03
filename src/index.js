@@ -7,12 +7,6 @@ const BASE_SCREEN_PATH = './screenshots';
 const BASE_DEBUG_PATH = './debug';
 const files = await fs.readdir(BASE_SCREEN_PATH);
 
-const file = files[0];
-const filename = file.split('.')[0];
-const sourcePath = path.join(BASE_SCREEN_PATH, file);
-await extractOverlay(sourcePath, path.join(BASE_DEBUG_PATH, `${filename}-overlay.jpg`));
-
-
 await Promise.all(targetColours.map(async ({ colour: targetColor, label }) => {
 	for (let i = 0; i < files.length; i++) {
 		const file = files[i];
