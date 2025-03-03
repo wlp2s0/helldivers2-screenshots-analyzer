@@ -10,10 +10,10 @@ import { getThresholds } from './functions/getThresholds.js';
 import { mergeRectangles } from './functions/mergeRectangles.js';
 import { replaceColor } from './functions/replaceColor.js';
 
-const exposeIconInBox = (box, originalImage, targetColor, tolerance) => {
+const exposeIconInBox = (box, originalImage, targetColor) => {
     const [x, y, w, h] = box;
     const image = originalImage.clone().crop({ x, y, w, h });
-    replaceColor(image, targetColor, { r: 255, g: 255, b: 255 }, tolerance);
+    replaceColor(image, targetColor, { r: 255, g: 255, b: 255 }, targetColor.tolerance);
     return image
 }
 
@@ -28,7 +28,7 @@ const exposeIconInBox = (box, originalImage, targetColor, tolerance) => {
  * @param {number} [options.colorTolerance=45] - The tolerance for color matching.
  * @param {number} [options.minMergeThresholdRatio=0.001] - The ratio for merging close boxes.
  * @param {number} [options.marginThresholdRatio=0.005] - The ratio for determining the margin threshold.
- * @param {number} [options.cropRatioWidth=1] - The width ratio for cropping the image.
+ * @param {number} [options.cropRatioWidth=0.33] - The width ratio for cropping the image.
  * @param {number} [options.cropRatioHeight=1] - The height ratio for cropping the image.
  * @param {number} [options.minWidthThresholdRatio=0.02] - The minimum width ratio for detected boxes.
  * @param {number} [options.minHeightThresholdRatio=0.025] - The minimum height ratio for detected boxes.
@@ -36,8 +36,6 @@ const exposeIconInBox = (box, originalImage, targetColor, tolerance) => {
  * @param {number} [options.maxHeightThresholdRatio=0.14] - The maximum height ratio for detected boxes.
  * @param {boolean} [options.debug=false] - Whether to enable debug mode.
  * @param {string} [options.baseDebugPath="./debug"] - Where debug images will be placed.
- * @param {number} [options.minAllowedBoxProportion=0.1] - The minimum allowed box proportion.
- * @param {number} [options.maxAllowedBoxProportion=10] - The maximum allowed box proportion.
  * @returns {Promise<Object>} An object containing the classification counts.
  */
 export const parseImage = async ({
@@ -45,20 +43,18 @@ export const parseImage = async ({
     label,
     sourcePath,
     targetColor,
-    colorTolerance = 48,
     minMergeThresholdRatio = 0.001,
     maxMergeThresholdRatio = 0.4,
     marginThresholdRatio = 0.0025,
-    cropRatioWidth = 1,
-    cropRatioHeight = 1,
     minWidthThresholdRatio = 0.02,
-    minHeightThresholdRatio = 0.025,
     maxWidthThresholdRatio = 0.14,
     maxHeightThresholdRatio = 0.14,
     debug = false,
     baseDebugPath = "./debug",
     allowedBoxProportion = 2.5,
-    // maxAllowedBoxProportion = 5,
+    minHeightThresholdRatio = 0.02,
+    cropRatioWidth = 0.33,
+    cropRatioHeight = 0.85,
 }) => {
     console.log(`[${label}] Processing ${filename}`);
 
@@ -69,6 +65,7 @@ export const parseImage = async ({
     if (debug) {
         console.warn(`[${label}] Debug mode enabled, writing debug images to ${baseDebugPath}/${filename}`);
         await mkdir(`./${baseDebugPath}/${filename}`, { recursive: true });
+        await image.write(`./${baseDebugPath}/${filename}/${label}.0.original.png`);
     }
 
     // Crop the image based on width and height ratios.
@@ -82,7 +79,7 @@ export const parseImage = async ({
     const { marginThreshold, minMergeThreshold, maxMergeThreshold, minWidth, minHeight, maxWidth, maxHeight } = getThresholds({ dimension: height, minMergeThresholdRatio, maxMergeThresholdRatio, marginThresholdRatio, minWidthThresholdRatio, minHeightThresholdRatio, maxWidthThresholdRatio, maxHeightThresholdRatio });
 
     // Create a mask highlighting areas matching the target color.
-    const mask = buildMask(croppedImage, targetColor, colorTolerance);
+    const mask = buildMask(croppedImage, targetColor);
 
     // Create an image from the mask for debugging purposes.
     const maskImage = new Jimp({ width: mask[0].length, height: mask.length });
@@ -152,7 +149,7 @@ export const parseImage = async ({
         .map(({ box, ...rest }) => ({
             ...rest,
             box,
-            image: exposeIconInBox(box, croppedImage, targetColor, colorTolerance)
+            image: exposeIconInBox(box, croppedImage, targetColor)
         }))
         // Determine if box image is plain white.
         .map(({ image, ...rest }) => ({
