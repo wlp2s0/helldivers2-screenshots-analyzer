@@ -1,3 +1,4 @@
+import { Box } from "../types/Box.js";
 
 /**
  * Performs a flood fill algorithm to find the bounding box of a contiguous region in a 2D grid.
@@ -10,14 +11,14 @@
  * @param {number} height - The height of the grid.
  * @returns {{ box: [number, number, number, number], visited: boolean[][] }} An object containing the bounding box of the filled region and the updated visited array.
  */
-function floodFill(sx, sy, mask, visited, width, height) {
+function floodFill(sx: number, sy: number, mask: boolean[][], visited: boolean[][], width: number, height: number): { box: [number, number, number, number]; visited: boolean[][]; } {
     const newVisited = visited.map(row => row.slice());
     const stack = [[sx, sy]];
     newVisited[sy][sx] = true;
     let minX = sx, maxX = sx, minY = sy, maxY = sy;
     const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
     while (stack.length) {
-        const [x, y] = stack.pop();
+        const [x, y] = stack.pop() ?? [];
         if (x < minX) minX = x;
         if (x > maxX) maxX = x;
         if (y < minY) minY = y;
@@ -45,8 +46,8 @@ function floodFill(sx, sy, mask, visited, width, height) {
  * @param {number} [boxMargin=5] - The margin to add around each bounding box.
  * @returns {Array.<Array.<number>>} An array of bounding boxes, where each box is represented as an array [x, y, width, height].
  */
-export const buildBoxes = (mask, width, height, boxMargin = 5) => {
-    let boxes = [];
+export const buildBoxes = (mask: boolean[][], width: number, height: number, boxMargin: number = 5): Array<Box> => {
+    let boxes: Array<Box> = [];
     // Keep track of visited pixels
     let visited = Array.from({ length: height }, () => Array(width).fill(false));
     for (let y = 0; y < height; y++) {

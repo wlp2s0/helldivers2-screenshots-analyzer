@@ -1,3 +1,5 @@
+import { Box } from "../types/Box.js";
+
 /**
  * Determines if two rectangles overlap, considering an optional margin.
  *
@@ -6,7 +8,7 @@
  * @param {number} [margin=5] - The optional margin to consider around the rectangles.
  * @returns {boolean} - Returns true if the rectangles overlap, otherwise false.
  */
-function rectOverlap(a, b, margin = 5) {
+function rectOverlap(a: number[], b: number[], margin: number = 5): boolean {
     const [ax, ay, aw, ah] = a;
     const [bx, by, bw, bh] = b;
     return (ax < bx + bw + margin && ax + aw + margin > bx &&
@@ -20,7 +22,7 @@ function rectOverlap(a, b, margin = 5) {
  * @param {number[]} b - The second rectangle represented as [x, y, width, height].
  * @returns {number[]} The smallest rectangle that contains both input rectangles, represented as [x, y, width, height].
  */
-function rectUnion(a, b) {
+function rectUnion(a: number[], b: number[]): number[] {
     const [ax, ay, aw, ah] = a;
     const [bx, by, bw, bh] = b;
     const x = Math.min(ax, bx);
@@ -38,7 +40,7 @@ function rectUnion(a, b) {
  * @param {number} [maxSize=Infinity] - The maximum size for the merged rectangles.
  * @returns {Array<{x: number, y: number, width: number, height: number}>} - Array of merged rectangles.
  */
-export function mergeRectangles(rectangles, minSize = 5, maxSize = 500) {
+export function mergeRectangles(rectangles: Array<Box>, minSize: number = 5, maxSize: number = 500): Array<Box> {
     let merged = [...rectangles];
     let changed = true;
     while (changed) {
@@ -56,9 +58,10 @@ export function mergeRectangles(rectangles, minSize = 5, maxSize = 500) {
                 }
                 if (rectOverlap(current, merged[j], minSize)) {
                     const candidate = rectUnion(current, merged[j]);
+                    const [x, y, w, h] = candidate
                     // Check candidate box dimensions: candidate[2] -> width, candidate[3] -> height.
-                    if (candidate[2] <= maxSize && candidate[3] <= maxSize) {
-                        current = candidate;
+                    if (w <= maxSize && h <= maxSize) {
+                        current = [x, y, w, h];
                         used[j] = true;
                         changed = true;
                     }

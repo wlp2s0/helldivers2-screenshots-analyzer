@@ -1,3 +1,4 @@
+import { JimpImage } from "../types/JimpImage.js";
 
 /**
  * Draws a rectangle on the given image.
@@ -9,9 +10,9 @@
  * @param {number} h - The height of the rectangle.
  * @param {number} colorInt - The color of the rectangle in integer format.
  * @param {number} [thickness=2] - The thickness of the rectangle's border.
- * @returns {Object} The new image object with the rectangle drawn on it.
+ * @returns The new image object with the rectangle drawn on it.
  */
-export function drawRectangle(originalImage, x, y, w, h, colorInt, thickness = 2) {
+export function drawRectangle(originalImage: JimpImage, x: number, y: number, w: number, h: number, colorInt: number, thickness: number = 2): JimpImage {
     const newImage = originalImage.clone()
 
     // Draw top and bottom lines

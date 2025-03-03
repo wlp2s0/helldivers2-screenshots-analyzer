@@ -1,3 +1,14 @@
+interface GetThresholdsArgs {
+    dimension: number;
+    minMergeThresholdRatio: number;
+    maxMergeThresholdRatio: number;
+    marginThresholdRatio: number;
+    minWidthThresholdRatio: number;
+    minHeightThresholdRatio: number;
+    maxWidthThresholdRatio: number;
+    maxHeightThresholdRatio: number;
+}
+
 export const getThresholds = ({
     dimension,
     minMergeThresholdRatio,
@@ -7,7 +18,7 @@ export const getThresholds = ({
     minHeightThresholdRatio,
     maxWidthThresholdRatio,
     maxHeightThresholdRatio
-}) => {
+}: GetThresholdsArgs) => {
     const marginThreshold = Math.floor(Math.max(dimension * marginThresholdRatio, 1));
     const minMergeThreshold = Math.floor(Math.max(dimension * minMergeThresholdRatio, 1));
     const maxMergeThreshold = Math.floor(Math.max(dimension * maxMergeThresholdRatio, 1));

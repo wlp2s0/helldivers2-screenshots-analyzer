@@ -9,12 +9,35 @@ import { getColorPercentage } from './functions/getColorPercentage.js';
 import { getThresholds } from './functions/getThresholds.js';
 import { mergeRectangles } from './functions/mergeRectangles.js';
 import { replaceColor } from './functions/replaceColor.js';
+import { TargetColour } from './types/TargetColour.js';
+import { JimpImage } from './types/JimpImage.js';
+import { Box } from './types/Box.js';
 
-const exposeIconInBox = (box, originalImage, targetColor) => {
+const exposeIconInBox = (box: Box, originalImage: JimpImage, targetColor: TargetColour) => {
     const [x, y, w, h] = box;
-    const image = originalImage.clone().crop({ x, y, w, h });
+    const image = originalImage.clone().crop({ x, y, w, h }) as unknown as JimpImage;
     replaceColor(image, targetColor, { r: 255, g: 255, b: 255 }, targetColor.tolerance);
     return image
+}
+
+interface ParseImageArgs {
+    filename: string;
+    label: string;
+    sourcePath: string;
+    targetColor: TargetColour;
+    colorTolerance?: number;
+    minMergeThresholdRatio?: number;
+    maxMergeThresholdRatio?: number;
+    marginThresholdRatio?: number;
+    cropRatioWidth?: number;
+    cropRatioHeight?: number;
+    minWidthThresholdRatio?: number;
+    minHeightThresholdRatio?: number;
+    maxWidthThresholdRatio?: number;
+    maxHeightThresholdRatio?: number;
+    allowedBoxProportion?: number;
+    debug?: boolean;
+    baseDebugPath?: string;
 }
 
 /**
@@ -55,7 +78,7 @@ export const parseImage = async ({
     minHeightThresholdRatio = 0.02,
     cropRatioWidth = 0.33,
     cropRatioHeight = 0.85,
-}) => {
+}: ParseImageArgs): Promise<object> => {
     console.log(`[${label}] Processing ${filename}`);
 
     // Read the source image.
@@ -69,7 +92,7 @@ export const parseImage = async ({
     }
 
     // Crop the image based on width and height ratios.
-    const { croppedImage } = await cropImage(image, cropRatioWidth, cropRatioHeight);
+    const croppedImage = await cropImage(image, cropRatioWidth, cropRatioHeight);
     if (debug) {
         await croppedImage.write(`./${baseDebugPath}/${filename}/${label}.0.cropped.png`);
     }
@@ -102,7 +125,7 @@ export const parseImage = async ({
     const boxes = buildBoxes(mask, width, height, marginThreshold);
 
     if (debug) {
-        let imageBox = maskImage.clone();
+        let imageBox = maskImage.clone() as unknown as JimpImage;
         for (const box of boxes) {
             const [x, y, w, h] = box;
             imageBox = drawRectangle(imageBox, x, y, w, h, green, 2);
@@ -113,7 +136,7 @@ export const parseImage = async ({
     // Merge boxes that are close to each other using the dynamic merge threshold.
     const mergedBoxes = mergeRectangles(boxes, minMergeThreshold, maxMergeThreshold);
     if (debug) {
-        let imageMergedBox = maskImage.clone();
+        let imageMergedBox = maskImage.clone() as unknown as JimpImage;
         for (const box of mergedBoxes) {
             const [x, y, w, h] = box;
             imageMergedBox = drawRectangle(imageMergedBox, x, y, w, h, green, 2);
@@ -192,11 +215,11 @@ export const parseImage = async ({
     }
 
     // Clone the cropped image to draw on.
-    let maskHighlightedImage;
-    let originalHighlightedImage;
+    let maskHighlightedImage: JimpImage | undefined;
+    let originalHighlightedImage: JimpImage | undefined;
     if (debug) {
-        maskHighlightedImage = maskImage.clone();
-        originalHighlightedImage = croppedImage.clone();
+        maskHighlightedImage = maskImage.clone() as unknown as JimpImage;
+        originalHighlightedImage = croppedImage.clone() as unknown as JimpImage;
     }
 
     // Initialize counters for different box types.
@@ -244,10 +267,12 @@ export const parseImage = async ({
 
     // Write the modified image to the target path.
     if (debug) {
-        await maskHighlightedImage.write(`./${baseDebugPath}/${filename}/${label}.5.mask.highlight.png`);
-        await originalHighlightedImage.write(`./${baseDebugPath}/${filename}/${label}.5.highlight.png`);
+        await maskHighlightedImage?.write(`./${baseDebugPath}/${filename}/${label}.5.mask.highlight.png`);
+        await originalHighlightedImage?.write(`./${baseDebugPath}/${filename}/${label}.5.highlight.png`);
     }
 
     // Return the classification counts.
     return match;
 };
+
+export default parseImage;

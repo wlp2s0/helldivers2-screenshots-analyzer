@@ -1,18 +1,21 @@
+import type { JimpImage } from "../types/JimpImage.js";
+import { TargetColour } from "../types/TargetColour.js";
+
 /**
  * Generates a mask for an image based on a target color and tolerance.
  *
- * @param {import("@jimp/types").JimpClass} image - The image object containing bitmap data.
- * @param {Object} color - The target color to match, with properties `r`, `g`, `b`, and `tolerance`.
- * @returns {boolean[][]} A 2D array representing the mask, where `true` indicates a pixel matches the target color within the specified tolerance.
+ * @param image - The image object containing bitmap data.
+ * @param color - The target color to match, with properties `r`, `g`, `b`, and `tolerance`.
+ * @returns A 2D array representing the mask, where `true` indicates a pixel matches the target color within the specified tolerance.
  */
-export const buildMask = (image, { tolerance, ...color }) => {
+export const buildMask = (image: JimpImage, { tolerance, ...color }: TargetColour) => {
   // Get image dimensions.
   const { width, height } = image.bitmap;
   // Initialize a 2D array filled with false.
   const mask = Array.from({ length: height }, () => Array(width).fill(false));
 
   // Scan every pixel of the image.
-  image.scan(0, 0, width, height, function (x, y, idx) {
+  image.scan(0, 0, width, height, function (this: JimpImage, x, y, idx) {
     // Read the red, green, and blue values for the current pixel.
     const r = this.bitmap.data[idx + 0];
     const g = this.bitmap.data[idx + 1];

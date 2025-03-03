@@ -1,23 +1,25 @@
-import { rgbaToInt, intToRGBA } from 'jimp';
+import { rgbaToInt, intToRGBA, BmpColor } from 'jimp';
+import { JimpImage } from '../types/JimpImage.js';
+import { Colour } from '../types/Colour.js';
 
 /**
  * Replaces a specified color in an image with a new color, within a given tolerance and margin.
  *
- * @param {import("@jimp/types").JimpClass} image - The image object to process.
+ * @param image - The image object to process.
  * @param {Object} oldColor - The color to be replaced, as an object with r, g, b, and optional a properties.
  * @param {Object} newColor - The new color to apply, as an object with r, g, b, and optional a properties.
  * @param {number} [tolerance=30] - The tolerance level for color matching (default is 30).
  * @param {number} [margin=0] - The margin around the matching pixel to also replace (default is 0).
  * @returns {Object} - The modified image object.
  */
-export function replaceColor(image, oldColor, newColor, tolerance = 30, margin = 0) {
+export function replaceColor(image: JimpImage, oldColor: Colour, newColor: Colour, tolerance: number = 30, margin: number = 0): object {
     // Convert RGB objects to integer values
     const oldColorInt = rgbaToInt(oldColor.r, oldColor.g, oldColor.b, oldColor.a ?? 255);
     const newColorInt = rgbaToInt(newColor.r, newColor.g, newColor.b, newColor.a ?? 255);
     const placeholderColorInt = rgbaToInt(0, 0, 0, 255);
     const { width, height } = image.bitmap;
 
-    image.scan(0, 0, width, height, function (x, y) {
+    image.scan(0, 0, width, height, function (this: JimpImage, x, y) {
         const pixelInt = this.getPixelColor(x, y);
         const { r, g, b } = intToRGBA(pixelInt);
         if (
