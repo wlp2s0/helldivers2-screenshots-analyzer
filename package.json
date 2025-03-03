@@ -24,5 +24,11 @@
 	},
 	"files": [
 		"dist"
-	]
+	],
+	"exports": {
+		".": {
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.cjs"
+		}
+	}
 }

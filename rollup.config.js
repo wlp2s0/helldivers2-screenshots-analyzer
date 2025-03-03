@@ -6,10 +6,13 @@ import { nodeExternals } from 'rollup-plugin-node-externals'
 
 export default {
     input: 'src/parseImage.js',
-    output: {
-        file: 'dist/bundle.js',
+    output: [{
+        file: 'dist/index.cjs',
         format: 'cjs',
-    },
+    }, {
+        file: 'dist/index.mjs',
+        format: 'es',
+    }],
     plugins: [
         nodeExternals(),
         nodeResolve(),
