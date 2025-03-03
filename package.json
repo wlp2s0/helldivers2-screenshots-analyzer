@@ -1,9 +1,27 @@
 {
-	"type": "module",
+	"version": "1.0.0",
+	"description": "A screenshots analyzer for Helldivers 2",
+	"name": "helldivers2-screenshots-analyzer",
 	"scripts": {
-		"start": "node ./src/index.js"
+		"start": "node ./src/index.js",
+		"debug-screenshots": "node ./src/debugScreenshots.js",
+		"build": "rollup --config rollup.config.js",
+		"prepublish": "npm run build",
+		"postversion": "git push && git push --tags && npm publish"
 	},
 	"dependencies": {
 		"jimp": "^1.6.0"
-	}
+	},
+	"devDependencies": {
+		"@babel/preset-env": "^7.26.9",
+		"@rollup/plugin-babel": "^6.0.4",
+		"@rollup/plugin-commonjs": "^28.0.2",
+		"@rollup/plugin-node-resolve": "^16.0.0",
+		"@rollup/plugin-terser": "^0.4.4",
+		"rollup": "^4.34.9",
+		"rollup-plugin-node-externals": "^8.0.0"
+	},
+	"files": [
+		"dist"
+	]
 }
