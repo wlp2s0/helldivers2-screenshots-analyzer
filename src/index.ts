@@ -40,6 +40,7 @@ interface ParseImageArgs {
     plainColorThresholdPercentage?: number;
     debug?: boolean;
     baseDebugPath?: string;
+    yCropOffsetRatio?: number
 }
 
 /**
@@ -61,7 +62,7 @@ interface ParseImageArgs {
  * @param {number} [options.maxHeightThresholdRatio=0.14] - The maximum height ratio for detected boxes.
  * @param {boolean} [options.debug=false] - Whether to enable debug mode.
  * @param {string} [options.baseDebugPath="./debug"] - Where debug images will be placed.
- * @returns {Promise<Object>} An object containing the classification counts.
+ * @returns An object containing the classification counts.
  */
 export const parseImage = async ({
     filename,
@@ -70,7 +71,6 @@ export const parseImage = async ({
     targetColor,
     minMergeThresholdRatio = 0.001,
     maxMergeThresholdRatio = 0.4,
-    marginThresholdRatio = 0.0025,
     minWidthThresholdRatio = 0.02,
     maxWidthThresholdRatio = 0.14,
     maxHeightThresholdRatio = 0.14,
@@ -79,14 +79,17 @@ export const parseImage = async ({
     allowedBoxProportion = 2.5,
     minHeightThresholdRatio = 0.02,
     cropRatioWidth = 0.33,
-    cropRatioHeight = 0.85,
+    cropRatioHeight = 0.5,
     noiseThresholdPercentage = 7.5,
     plainColorThresholdPercentage = 90,
-}: ParseImageArgs): Promise<object> => {
+    marginThresholdRatio = 0.005,
+    yCropOffsetRatio = 0.1
+}: ParseImageArgs) => {
     console.log(`[${label}] Processing ${filename}`);
 
     // Read the source image.
     const image = await Jimp.read(sourcePath);
+    
     console.log(`[${label}] Read image ${filename}`);
 
     if (debug) {
@@ -96,14 +99,14 @@ export const parseImage = async ({
     }
 
     // Crop the image based on width and height ratios.
-    const croppedImage = await cropImage(image, cropRatioWidth, cropRatioHeight);
+    const croppedImage = await cropImage(image, cropRatioWidth, cropRatioHeight, yCropOffsetRatio);
     if (debug) {
         await croppedImage.write(`./${baseDebugPath}/${filename}/${label}.0.cropped.png`);
     }
     // Retrieve dimensions from the cropped image.
     const { width, height } = croppedImage.bitmap;
 
-    const { marginThreshold, minMergeThreshold, maxMergeThreshold, minWidth, minHeight, maxWidth, maxHeight } = getThresholds({ dimension: height, minMergeThresholdRatio, maxMergeThresholdRatio, marginThresholdRatio, minWidthThresholdRatio, minHeightThresholdRatio, maxWidthThresholdRatio, maxHeightThresholdRatio });
+    const { marginThreshold, minMergeThreshold, maxMergeThreshold, minWidth, minHeight, maxWidth, maxHeight } = getThresholds({ dimension: image.bitmap.height, minMergeThresholdRatio, maxMergeThresholdRatio, marginThresholdRatio, minWidthThresholdRatio, minHeightThresholdRatio, maxWidthThresholdRatio, maxHeightThresholdRatio });
 
     // Create a mask highlighting areas matching the target color.
     const mask = buildMask(croppedImage, targetColor);
