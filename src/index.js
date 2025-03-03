@@ -2,9 +2,6 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { parseImage } from './parseImage.js';
 import { targetColours } from './constants/colours.js';
-import { Jimp, intToRGBA } from 'jimp';
-import { createHeatmap } from './createHeatmap.js';
-import { cropImage } from './functions/cropImage.js';
 
 const BASE_SCREEN_PATH = './screenshots';
 const BASE_DEBUG_PATH = './debug';
