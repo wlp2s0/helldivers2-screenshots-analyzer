@@ -4,10 +4,11 @@
 	"name": "helldivers2-screenshots-analyzer",
 	"type": "module",
 	"scripts": {
+		"check": "tsc --noEmit",
 		"start": "node ./src/index.js",
 		"debug-screenshots": "node ./src/debugScreenshots.js",
 		"build": "rollup --config rollup.config.js",
-		"preversion": "npm run build",
+		"preversion": "npm run check && npm run build",
 		"postversion": "git push && git push --tags && npm publish"
 	},
 	"dependencies": {
@@ -19,8 +20,11 @@
 		"@rollup/plugin-commonjs": "^28.0.2",
 		"@rollup/plugin-node-resolve": "^16.0.0",
 		"@rollup/plugin-terser": "^0.4.4",
+		"@rollup/plugin-typescript": "^12.1.2",
 		"rollup": "^4.34.9",
-		"rollup-plugin-node-externals": "^8.0.0"
+		"rollup-plugin-node-externals": "^8.0.0",
+		"tslib": "^2.8.1",
+		"typescript": "^5.8.2"
 	},
 	"files": [
 		"dist"
