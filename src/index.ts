@@ -36,6 +36,8 @@ interface ParseImageArgs {
     maxWidthThresholdRatio?: number;
     maxHeightThresholdRatio?: number;
     allowedBoxProportion?: number;
+    noiseThresholdPercentage?: number;
+    plainColorThresholdPercentage?: number;
     debug?: boolean;
     baseDebugPath?: string;
 }
@@ -78,6 +80,8 @@ export const parseImage = async ({
     minHeightThresholdRatio = 0.02,
     cropRatioWidth = 0.33,
     cropRatioHeight = 0.85,
+    noiseThresholdPercentage = 7.5,
+    plainColorThresholdPercentage = 90,
 }: ParseImageArgs): Promise<object> => {
     console.log(`[${label}] Processing ${filename}`);
 
@@ -178,8 +182,8 @@ export const parseImage = async ({
         .map(({ image, ...rest }) => ({
             ...rest,
             image,
-            isPlainColor: getColorPercentage(image, { r: 255, g: 255, b: 255 }, 0) > 90,
-            isNoisy: getColorPercentage(image, { r: 255, g: 255, b: 255 }, 0) < 10,
+            isPlainColor: getColorPercentage(image, { r: 255, g: 255, b: 255 }, 0) > plainColorThresholdPercentage,
+            isNoisy: getColorPercentage(image, { r: 255, g: 255, b: 255 }, 0) < noiseThresholdPercentage,
         }))
         // Mark boxes with abnormal width/height proportions.
         .map(({ box, image, isPlainColor, isNoisy, isSmallBox, isBigBox, ...rest }) => {
@@ -199,7 +203,7 @@ export const parseImage = async ({
 
     if (debug) {
         let index = 0;
-        for (const { box, isPlainColor, isBigBox, isSmallBox, isNoisy, image } of filteredBoxes) {
+        for (const { isPlainColor, isBigBox, isSmallBox, isNoisy, image } of filteredBoxes) {
             if (isPlainColor || isBigBox || isSmallBox || isNoisy) {
                 continue;
             }
