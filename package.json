@@ -2,11 +2,12 @@
 	"version": "1.0.1",
 	"description": "A screenshots analyzer for Helldivers 2",
 	"name": "helldivers2-screenshots-analyzer",
+	"type": "module",
 	"scripts": {
 		"start": "node ./src/index.js",
 		"debug-screenshots": "node ./src/debugScreenshots.js",
 		"build": "rollup --config rollup.config.js",
-		"prepublish": "npm run build",
+		"preversion": "npm run build",
 		"postversion": "git push && git push --tags && npm publish"
 	},
 	"dependencies": {
