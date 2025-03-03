@@ -10,7 +10,7 @@
 		"build": "rollup --config rollup.config.js",
 		"preversion": "npm run check && npm run build",
 		"postversion": "git push && git push --tags && npm publish",
-		"test": "node --test --experimental-strip-types"
+		"test": "node --test --experimental-strip-types --experimental-transform-types"
 	},
 	"dependencies": {
 		"jimp": "^1.6.0"
