@@ -36,7 +36,7 @@ Parses an image to detect and classify areas matching a target color.
 |-----------|------|---------|-------------|
 | `filename` | `string` | *Required* | Name of the file to be parsed |
 | `label` | `string` | *Required* | Label used for debugging and console output |
-| `sourcePath` | `string` | *Required* | Full path to the source image |
+| `sourcePath` | `string` | *Required* | Full path to the source image, it can either be a local fs path or an url |
 | `targetColor` | `TargetColour` | *Required* | The target color to detect in the image |
 | `minMergeThresholdRatio` | `number` | `0.001` | Minimum threshold ratio for merging detected regions |
 | `maxMergeThresholdRatio` | `number` | `0.4` | Maximum threshold ratio for merging detected regions |
