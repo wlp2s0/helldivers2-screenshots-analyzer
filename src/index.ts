@@ -1,9 +1,12 @@
 import type { TargetColour } from './types/TargetColour.ts';
 import type { JimpImage } from './types/JimpImage.ts';
 import type { Box } from './types/Box.ts';
+
 import { mkdir } from 'fs/promises';
 import { Jimp, rgbaToInt } from 'jimp';
+
 import { green, red, blue, yellow, magenta, cyan } from './constants/colours.ts';
+
 import { buildBoxes } from './functions/buildBoxes.ts';
 import { buildMask } from './functions/buildMask.ts';
 import { cropImage } from './functions/cropImage.ts';
@@ -12,6 +15,7 @@ import { getColorPercentage } from './functions/getColorPercentage.ts';
 import { getThresholds } from './functions/getThresholds.ts';
 import { mergeRectangles } from './functions/mergeRectangles.ts';
 import { replaceColor } from './functions/replaceColor.ts';
+import { extractNonBlackRegion } from './functions/extractNonBlackRegion.ts';
 
 const exposeIconInBox = (box: Box, originalImage: JimpImage, targetColor: TargetColour) => {
     const [x, y, w, h] = box;
@@ -71,19 +75,19 @@ export const parseImage = async ({
     targetColor,
     minMergeThresholdRatio = 0.001,
     maxMergeThresholdRatio = 0.4,
-    minWidthThresholdRatio = 0.02,
+    minWidthThresholdRatio = 0.015,
+    minHeightThresholdRatio = 0.015,
     maxWidthThresholdRatio = 0.14,
     maxHeightThresholdRatio = 0.14,
     debug = false,
     baseDebugPath = "./debug",
     allowedBoxProportion = 2.5,
-    minHeightThresholdRatio = 0.02,
-    cropRatioWidth = 0.33,
-    cropRatioHeight = 0.5,
+    cropRatioWidth = 0.275,
+    cropRatioHeight = 0.35,
     noiseThresholdPercentage = 7.5,
     plainColorThresholdPercentage = 90,
     marginThresholdRatio = 0.005,
-    yCropOffsetRatio = 0.1
+    yCropOffsetRatio = 0.025
 }: ParseImageArgs) => {
     console.log(`[${label}] Processing ${filename}`);
 
@@ -164,8 +168,19 @@ export const parseImage = async ({
                 return (x >= ox && y >= oy && x + w <= ox + ow && y + h <= oy + oh);
             });
         })
-        // Mark boxes too small.
+        // Extract sub-image for each box.
         .map((box) => ({
+            box,
+            image: exposeIconInBox(box, croppedImage, targetColor)
+        }))
+        // Auto crop box
+        .map(({ box: originalBox, image: exposedImage }) => {
+            const { minXBoundary, minYBoundary, width, height, image } = extractNonBlackRegion(exposedImage);
+            return { box: [minXBoundary, minYBoundary, width, height], image, originalBox };
+        })
+        // Mark boxes too small.
+        .map(({ box, ...rest }) => ({
+            ...rest,
             box,
             isSmallBox: box[2] < minWidth || box[3] < minHeight
         }))
@@ -175,12 +190,6 @@ export const parseImage = async ({
             box,
             isBigBox: box[2] > maxWidth || box[3] > maxHeight
         }))
-        // Extract sub-image for each box.
-        .map(({ box, ...rest }) => ({
-            ...rest,
-            box,
-            image: exposeIconInBox(box, croppedImage, targetColor)
-        }))
         // Determine if box image is plain white.
         .map(({ image, ...rest }) => ({
             ...rest,
@@ -189,7 +198,7 @@ export const parseImage = async ({
             isNoisy: getColorPercentage(image, { r: 255, g: 255, b: 255 }, 0) < noiseThresholdPercentage,
         }))
         // Mark boxes with abnormal width/height proportions.
-        .map(({ box, image, isPlainColor, isNoisy, isSmallBox, isBigBox, ...rest }) => {
+        .map(({ box, ...rest }) => {
             const [, , w, h] = box;
             // 4:3, 16:9
             const widthRatio = w / h;
@@ -201,7 +210,7 @@ export const parseImage = async ({
             if (heightRatio > allowedBoxProportion) {
                 isAbnormalProportion = true;
             }
-            return { box, image, isPlainColor, isNoisy, isSmallBox, isBigBox, isAbnormalProportion, ...rest };
+            return { box, isAbnormalProportion, ...rest };
         });
 
     if (debug) {
@@ -240,8 +249,8 @@ export const parseImage = async ({
     };
 
     // Draw rectangles around each detected box and update counters accordingly.
-    filteredBoxes.forEach(({ box, isPlainColor, isSmallBox, isBigBox, isNoisy, isAbnormalProportion }) => {
-        const [x, y, w, h] = box;
+    filteredBoxes.forEach(({ originalBox, isPlainColor, isSmallBox, isBigBox, isNoisy, isAbnormalProportion }) => {
+        const [x, y, w, h] = originalBox;
 
         let color = null;
         if (isAbnormalProportion) {
