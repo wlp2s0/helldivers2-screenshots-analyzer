@@ -29,6 +29,8 @@ export default {
 				rootDir: "./src",
 				removeComments: false,
 				declaration: true,
+				emitDeclarationOnly: true,
+				allowImportingTsExtensions: true,
 			},
 		}),
 		babel({

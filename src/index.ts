@@ -359,5 +359,3 @@ export const parseImage = async ({
 	// Return the classification counts.
 	return match;
 };
-
-export default parseImage;
