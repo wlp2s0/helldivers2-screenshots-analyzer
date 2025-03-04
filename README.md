@@ -84,22 +84,6 @@ Parses an image to detect and classify areas matching a target color.
 }
 ```
 
-## TypeScript Types
-
-The package includes TypeScript declarations for all exported functions and types.
-
-## Development
-
-```bash
-# Install dependencies
-npm install
-
-# Run tests
-npm test
-
-# Build the package
-npm run build
-```
 
 ## License
 
