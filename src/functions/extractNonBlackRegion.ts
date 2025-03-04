@@ -1,5 +1,5 @@
-import type { JimpImage } from "../types/JimpImage.ts";
 import { intToRGBA } from "jimp";
+import type { JimpImage } from "../types/JimpImage.ts";
 
 /**
  * Extracts the non-black region from the given image.

@@ -9,20 +9,13 @@ import type { JimpImage } from "../types/JimpImage.ts";
  * @param yCropOffsetRatio - The ratio to offset the crop on the Y-axis. Default is 0.1.
  * @returns - A promise that resolves to an object containing the cropped image.
  */
-export async function cropImage(
-	image: JimpImage,
-	cropRatioWidth = 0.55,
-	cropRatioHeight = 0.7,
-	yCropOffsetRatio = 0.1,
-): Promise<JimpImage> {
+export async function cropImage(image: JimpImage, cropRatioWidth = 0.55, cropRatioHeight = 0.7, yCropOffsetRatio = 0.1): Promise<JimpImage> {
 	const { width, height } = image.bitmap;
 
 	const cropWidth = Math.floor(width * cropRatioWidth);
 	const cropHeight = Math.floor(height * cropRatioHeight);
 	const cropX = Math.floor((width - cropWidth) / 2);
-	const cropY = Math.floor(
-		(height - cropHeight) / 2 + height * yCropOffsetRatio,
-	);
+	const cropY = Math.floor((height - cropHeight) / 2 + height * yCropOffsetRatio);
 
 	return image.clone().crop({
 		x: cropX,

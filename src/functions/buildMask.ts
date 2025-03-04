@@ -8,10 +8,7 @@ import type { TargetColour } from "../types/TargetColour.ts";
  * @param color - The target color to match, with properties `r`, `g`, `b`, and `tolerance`.
  * @returns A 2D array representing the mask, where `true` indicates a pixel matches the target color within the specified tolerance.
  */
-export const buildMask = (
-	image: JimpImage,
-	{ tolerance, ...color }: TargetColour,
-) => {
+export const buildMask = (image: JimpImage, { tolerance, ...color }: TargetColour) => {
 	// Get image dimensions.
 	const { width, height } = image.bitmap;
 	// Initialize a 2D array filled with false.
@@ -25,11 +22,7 @@ export const buildMask = (
 		const b = this.bitmap.data[idx + 2];
 
 		// Check if the pixel color is within the specified tolerance of the target color.
-		if (
-			Math.abs(r - color.r) <= tolerance &&
-			Math.abs(g - color.g) <= tolerance &&
-			Math.abs(b - color.b) <= tolerance
-		) {
+		if (Math.abs(r - color.r) <= tolerance && Math.abs(g - color.g) <= tolerance && Math.abs(b - color.b) <= tolerance) {
 			// Mark this pixel in the mask.
 			mask[y][x] = true;
 		}

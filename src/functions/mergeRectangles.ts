@@ -11,12 +11,7 @@ import type { Box } from "../types/Box.ts";
 function rectOverlap(a: number[], b: number[], margin = 5): boolean {
 	const [ax, ay, aw, ah] = a;
 	const [bx, by, bw, bh] = b;
-	return (
-		ax < bx + bw + margin &&
-		ax + aw + margin > bx &&
-		ay < by + bh + margin &&
-		ay + ah + margin > by
-	);
+	return ax < bx + bw + margin && ax + aw + margin > bx && ay < by + bh + margin && ay + ah + margin > by;
 }
 
 /**
@@ -44,11 +39,7 @@ function rectUnion(a: number[], b: number[]): number[] {
  * @param {number} [maxSize=Infinity] - The maximum size for the merged rectangles.
  * @returns {Array<{x: number, y: number, width: number, height: number}>} - Array of merged rectangles.
  */
-export function mergeRectangles(
-	rectangles: Array<Box>,
-	minSize = 5,
-	maxSize = 500,
-): Array<Box> {
+export function mergeRectangles(rectangles: Array<Box>, minSize = 5, maxSize = 500): Array<Box> {
 	let merged = [...rectangles];
 	let changed = true;
 	while (changed) {

@@ -49,14 +49,7 @@ function floodFill(
 		for (const [dx, dy] of dirs) {
 			const nx = x + dx;
 			const ny = y + dy;
-			if (
-				nx >= 0 &&
-				nx < width &&
-				ny >= 0 &&
-				ny < height &&
-				mask[ny][nx] &&
-				!newVisited[ny][nx]
-			) {
+			if (nx >= 0 && nx < width && ny >= 0 && ny < height && mask[ny][nx] && !newVisited[ny][nx]) {
 				newVisited[ny][nx] = true;
 				stack.push([nx, ny]);
 			}
@@ -77,26 +70,14 @@ function floodFill(
  * @param {number} [boxMargin=5] - The margin to add around each bounding box.
  * @returns {Array.<Array.<number>>} An array of bounding boxes, where each box is represented as an array [x, y, width, height].
  */
-export const buildBoxes = (
-	mask: boolean[][],
-	width: number,
-	height: number,
-	boxMargin = 5,
-): Array<Box> => {
+export const buildBoxes = (mask: boolean[][], width: number, height: number, boxMargin = 5): Array<Box> => {
 	const boxes: Array<Box> = [];
 	// Keep track of visited pixels
 	let visited = Array.from({ length: height }, () => Array(width).fill(false));
 	for (let y = 0; y < height; y++) {
 		for (let x = 0; x < width; x++) {
 			if (mask[y][x] && !visited[y][x]) {
-				const { box, visited: newVisited } = floodFill(
-					x,
-					y,
-					mask,
-					visited,
-					width,
-					height,
-				);
+				const { box, visited: newVisited } = floodFill(x, y, mask, visited, width, height);
 				// Expand box
 				const [minX, minY, w, h] = box;
 				const newX = Math.max(minX - boxMargin, 0);

@@ -12,37 +12,17 @@ import type { JimpImage } from "../types/JimpImage.ts";
  * @param {number} [margin=0] - The margin around the matching pixel to also replace (default is 0).
  * @returns {Object} - The modified image object.
  */
-export function replaceColor(
-	image: JimpImage,
-	oldColor: Colour,
-	newColor: Colour,
-	tolerance = 30,
-	margin = 0,
-): object {
+export function replaceColor(image: JimpImage, oldColor: Colour, newColor: Colour, tolerance = 30, margin = 0): object {
 	// Convert RGB objects to integer values
-	const oldColorInt = rgbaToInt(
-		oldColor.r,
-		oldColor.g,
-		oldColor.b,
-		oldColor.a ?? 255,
-	);
-	const newColorInt = rgbaToInt(
-		newColor.r,
-		newColor.g,
-		newColor.b,
-		newColor.a ?? 255,
-	);
+	const oldColorInt = rgbaToInt(oldColor.r, oldColor.g, oldColor.b, oldColor.a ?? 255);
+	const newColorInt = rgbaToInt(newColor.r, newColor.g, newColor.b, newColor.a ?? 255);
 	const placeholderColorInt = rgbaToInt(0, 0, 0, 255);
 	const { width, height } = image.bitmap;
 
 	image.scan(0, 0, width, height, function (this: JimpImage, x, y) {
 		const pixelInt = this.getPixelColor(x, y);
 		const { r, g, b } = intToRGBA(pixelInt);
-		if (
-			Math.abs(r - oldColor.r) <= tolerance &&
-			Math.abs(g - oldColor.g) <= tolerance &&
-			Math.abs(b - oldColor.b) <= tolerance
-		) {
+		if (Math.abs(r - oldColor.r) <= tolerance && Math.abs(g - oldColor.g) <= tolerance && Math.abs(b - oldColor.b) <= tolerance) {
 			// Replace the matching pixel and its neighbors
 			for (let dx = -margin; dx <= margin; dx++) {
 				for (let dy = -margin; dy <= margin; dy++) {

@@ -12,15 +12,7 @@ import type { JimpImage } from "../types/JimpImage.ts";
  * @param {number} [thickness=2] - The thickness of the rectangle's border.
  * @returns The new image object with the rectangle drawn on it.
  */
-export function drawRectangle(
-	originalImage: JimpImage,
-	x: number,
-	y: number,
-	w: number,
-	h: number,
-	colorInt: number,
-	thickness = 2,
-): JimpImage {
+export function drawRectangle(originalImage: JimpImage, x: number, y: number, w: number, h: number, colorInt: number, thickness = 2): JimpImage {
 	const newImage = originalImage.clone();
 
 	// Draw top and bottom lines
