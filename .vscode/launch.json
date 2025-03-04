@@ -1,0 +1,24 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "[DEBUG] Current file",
+            "runtimeVersion": "22.14.0",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "runtimeArgs": [
+                "--experimental-transform-types"
+            ],
+            "program": "${file}",
+            "env": {
+                "NODE_ENV": "test"
+            }
+        }
+    ]
+}
