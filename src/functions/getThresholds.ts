@@ -9,6 +9,29 @@ interface GetThresholdsArgs {
 	maxHeightThresholdRatio: number;
 }
 
+/**
+ * Calculates various threshold values based on the provided dimension and ratio arguments.
+ *
+ * @internal
+ * @param {Object} args - The arguments object.
+ * @param {number} args.dimension - The base dimension to calculate thresholds from.
+ * @param {number} args.minMergeThresholdRatio - The ratio to calculate the minimum merge threshold.
+ * @param {number} args.maxMergeThresholdRatio - The ratio to calculate the maximum merge threshold.
+ * @param {number} args.marginThresholdRatio - The ratio to calculate the margin threshold.
+ * @param {number} args.minWidthThresholdRatio - The ratio to calculate the minimum width threshold.
+ * @param {number} args.minHeightThresholdRatio - The ratio to calculate the minimum height threshold.
+ * @param {number} args.maxWidthThresholdRatio - The ratio to calculate the maximum width threshold.
+ * @param {number} args.maxHeightThresholdRatio - The ratio to calculate the maximum height threshold.
+ * 
+ * @returns {Object} An object containing the calculated threshold values.
+ * @returns {number} return.marginThreshold - The calculated margin threshold.
+ * @returns {number} return.minMergeThreshold - The calculated minimum merge threshold.
+ * @returns {number} return.maxMergeThreshold - The calculated maximum merge threshold.
+ * @returns {number} return.minWidth - The calculated minimum width threshold.
+ * @returns {number} return.minHeight - The calculated minimum height threshold.
+ * @returns {number} return.maxWidth - The calculated maximum width threshold.
+ * @returns {number} return.maxHeight - The calculated maximum height threshold.
+ */
 export const getThresholds = ({
 	dimension,
 	minMergeThresholdRatio,

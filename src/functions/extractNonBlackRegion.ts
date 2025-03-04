@@ -3,11 +3,11 @@ import type { JimpImage } from "../types/JimpImage.ts";
 
 /**
  * Extracts the non-black region from the given image.
- *
  * This function scans through the provided image and determines the boundaries
  * of the region that does not contain black pixels (where RGB values are not all zero).
  * It then crops the image to this region and returns the boundaries and the cropped image.
  *
+ * @internal
  * @param exposedImage - The image to process, represented as a JimpImage.
  * @returns An object containing the following properties:
  * - `minXBoundary`: The minimum x-coordinate of the non-black region.

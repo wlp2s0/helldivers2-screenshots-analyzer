@@ -2,7 +2,7 @@ import type { Box } from "../types/Box.ts";
 
 /**
  * Determines if two rectangles overlap, considering an optional margin.
- *
+ * @internal
  * @param {number[]} a - The first rectangle defined by [x, y, width, height].
  * @param {number[]} b - The second rectangle defined by [x, y, width, height].
  * @param {number} [margin=5] - The optional margin to consider around the rectangles.
@@ -16,7 +16,7 @@ function rectOverlap(a: number[], b: number[], margin = 5): boolean {
 
 /**
  * Computes the union of two rectangles.
- *
+ * @internal
  * @param {number[]} a - The first rectangle represented as [x, y, width, height].
  * @param {number[]} b - The second rectangle represented as [x, y, width, height].
  * @returns {number[]} The smallest rectangle that contains both input rectangles, represented as [x, y, width, height].
@@ -33,7 +33,7 @@ function rectUnion(a: number[], b: number[]): number[] {
 
 /**
  * Merges overlapping rectangles with a specified margin.
- *
+ * @internal
  * @param {Array<{x: number, y: number, width: number, height: number}>} rectangles - Array of rectangles to merge.
  * @param {number} [minSize=5] - The margin to consider for overlapping rectangles.
  * @param {number} [maxSize=Infinity] - The maximum size for the merged rectangles.

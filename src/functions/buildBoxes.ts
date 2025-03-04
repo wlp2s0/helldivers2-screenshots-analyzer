@@ -3,6 +3,7 @@ import type { Box } from "../types/Box.ts";
 /**
  * Performs a flood fill algorithm to find the bounding box of a contiguous region in a 2D grid.
  *
+ * @internal
  * @param {number} sx - The starting x-coordinate.
  * @param {number} sy - The starting y-coordinate.
  * @param {boolean[][]} mask - A 2D array representing the grid where true indicates fillable cells.
@@ -64,6 +65,7 @@ function floodFill(
 /**
  * Generates bounding boxes around contiguous regions in a binary mask.
  *
+ * @internal
  * @param {boolean[][]} mask - A 2D array representing the binary mask where 1 indicates the presence of a region and 0 indicates the absence.
  * @param {number} width - The width of the mask.
  * @param {number} height - The height of the mask.

@@ -4,7 +4,7 @@ import type { JimpImage } from "../types/JimpImage.ts";
 
 /**
  * Calculates the percentage of pixels in an image that match a target color within a given tolerance.
- *
+ * @internal
  * @param {JimpImage} image - The image object containing bitmap data.
  * @param {Object} targetColor - The target color to match against, with properties r, g, and b.
  * @param {number} [tolerance=0] - The tolerance value for color matching (default is 0).

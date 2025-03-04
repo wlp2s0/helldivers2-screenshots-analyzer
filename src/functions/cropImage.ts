@@ -3,6 +3,7 @@ import type { JimpImage } from "../types/JimpImage.ts";
 /**
  * Crops an image to the specified ratios and saves it to the target path.
  *
+ * @internal
  * @param image - The image object to be cropped.
  * @param cropRatioWidth - The width ratio to crop the image. Default is 0.55.
  * @param cropRatioHeight - The height ratio to crop the image. Default is 0.7.

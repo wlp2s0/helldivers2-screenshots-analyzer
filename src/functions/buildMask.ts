@@ -4,6 +4,7 @@ import type { TargetColour } from "../types/TargetColour.ts";
 /**
  * Generates a mask for an image based on a target color and tolerance.
  *
+ * @internal
  * @param image - The image object containing bitmap data.
  * @param color - The target color to match, with properties `r`, `g`, `b`, and `tolerance`.
  * @returns A 2D array representing the mask, where `true` indicates a pixel matches the target color within the specified tolerance.

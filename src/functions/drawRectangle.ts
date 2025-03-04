@@ -3,6 +3,7 @@ import type { JimpImage } from "../types/JimpImage.ts";
 /**
  * Draws a rectangle on the given image.
  *
+ * @internal
  * @param {import("@jimp/types").JimpClass} originalImage - The original image object to draw on.
  * @param {number} x - The x-coordinate of the top-left corner of the rectangle.
  * @param {number} y - The y-coordinate of the top-left corner of the rectangle.

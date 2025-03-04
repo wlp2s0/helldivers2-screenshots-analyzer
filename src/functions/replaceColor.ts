@@ -4,6 +4,7 @@ import type { JimpImage } from "../types/JimpImage.ts";
 
 /**
  * Replaces a specified color in an image with a new color, within a given tolerance and margin.
+ * @internal
  *
  * @param image - The image object to process.
  * @param {Object} oldColor - The color to be replaced, as an object with r, g, b, and optional a properties.
