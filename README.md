@@ -2,6 +2,11 @@
 
 A utility for analyzing screenshots from the game Helldivers 2 and identifying key elements by color detection.
 
+Find and count every completed primary and secondary missions
+
+![Detected missions](https://github.com/wlp2s0/war-crime-counter/blob/main/static/missions.png?raw=true)
+
+
 ## Installation
 
 ```bash
@@ -11,17 +16,29 @@ npm install helldivers2-screenshots-analyzer
 ## Usage
 
 ```javascript
+
 import { parseImage } from 'helldivers2-screenshots-analyzer';
 
-// Example usage
-const results = await parseImage({
+const primaryParseResult = await parseImage({
   filename: 'screenshot1',
   label: 'mission-icons',
-  sourcePath: './screenshots/screenshot1.jpg',
-  targetColor: { r: 255, g: 204, b: 0, tolerance: 30 }
+  sourcePath: 'https://raw.githubusercontent.com/wlp2s0/war-crime-counter/d21873b269f555d599977210f87e18aa7663b89f/test/fixtures/0_3_5.png',
+  targetColor: { r: 255, g: 135, b: 36, tolerance: 32 }
 });
 
-console.log(results);
+const secondaryParseResult = await parseImage({
+  filename: 'screenshot1',
+  label: 'mission-icons',
+  sourcePath: 'https://raw.githubusercontent.com/wlp2s0/war-crime-counter/d21873b269f555d599977210f87e18aa7663b89f/test/fixtures/0_3_5.png',
+  targetColor: { r: 113, g: 245, b: 255, tolerance: 42 }
+});
+
+console.log({ primaryMissions: primaryParseResult.success, secondaryMissions: secondaryParseResult.success });
+/*
+Expected output:
+{ primaryMissions: 3, secondaryMissions: 5 }
+*/
+
 ```
 
 ## API Reference
