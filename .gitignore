@@ -6,3 +6,4 @@ debug/
 screenshots/
 dist/
 .rollup.cache/
+tsconfig.tsbuildinfo
