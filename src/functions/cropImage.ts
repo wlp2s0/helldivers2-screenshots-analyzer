@@ -1,4 +1,4 @@
-import type { JimpImage } from "../types/JimpImage.js";
+import type { JimpImage } from "../types/JimpImage.ts";
 
 /**
  * Crops an image to the specified ratios and saves it to the target path.

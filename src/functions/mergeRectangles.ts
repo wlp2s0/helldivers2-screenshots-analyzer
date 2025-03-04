@@ -1,4 +1,4 @@
-import { Box } from "../types/Box.js";
+import type { Box } from "../types/Box.ts";
 
 /**
  * Determines if two rectangles overlap, considering an optional margin.

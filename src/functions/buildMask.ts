@@ -1,5 +1,5 @@
-import type { JimpImage } from "../types/JimpImage.js";
-import { TargetColour } from "../types/TargetColour.js";
+import type { JimpImage } from "../types/JimpImage.ts";
+import type { TargetColour } from "../types/TargetColour.ts";
 
 /**
  * Generates a mask for an image based on a target color and tolerance.

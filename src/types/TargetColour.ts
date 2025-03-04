@@ -1,4 +1,4 @@
-import type { Colour } from "./Colour.js";
+import type { Colour } from "./Colour.ts";
 
 export interface TargetColour extends Colour {
     tolerance: number;

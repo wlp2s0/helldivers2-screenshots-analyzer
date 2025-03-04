@@ -1,6 +1,6 @@
-import type { JimpImage } from '../types/JimpImage.js';
+import type { JimpImage } from '../types/JimpImage.ts';
+import type { Colour } from '../types/Colour.ts';
 import { intToRGBA } from 'jimp';
-import { Colour } from '../types/Colour.js';
 
 /**
  * Calculates the percentage of pixels in an image that match a target color within a given tolerance.

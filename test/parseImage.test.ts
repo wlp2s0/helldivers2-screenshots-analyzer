@@ -4,8 +4,7 @@ import { strictEqual } from "node:assert"
 import { fileURLToPath } from "node:url"
 import { join } from "node:path"
 
-//@ts-ignore must fix later
-import parseImage from "../dist/index.mjs"
+import parseImage from "../src/index.ts"
 
 test("[parseImage] should return expected success rate", async () => {
     const targetColours = [
@@ -33,10 +32,10 @@ test("[parseImage] should return expected success rate", async () => {
 
         const sourcePath = join(finalFixturePath, file)
 
-        const primaryResult = await parseImage({ filename, sourcePath, targetColor: primaryColour.colour, label: primaryColour.label, debug: true, debugPath: "./debug", cropRatioHeight: 0.5, yCropOffsetRatio: 0.1 })
+        const primaryResult = await parseImage({ filename, sourcePath, targetColor: primaryColour.colour, label: primaryColour.label, debug: true, baseDebugPath: "./debug" })
         strictEqual(primaryResult.success, parseInt(expectedPrimarySuccess), "Primary missions failed: " + sourcePath)
 
-        const secondaryResult = await parseImage({ filename, sourcePath, targetColor: secondaryColour.colour, label: secondaryColour.label, debug: true, debugPath: "./debug" })
+        const secondaryResult = await parseImage({ filename, sourcePath, targetColor: secondaryColour.colour, label: secondaryColour.label, debug: true, baseDebugPath: "./debug" })
         strictEqual(secondaryResult.success, parseInt(expectedSecondarySuccess), "Secondary missions failed: " + sourcePath)
     }
 })

@@ -1,4 +1,4 @@
-import { JimpImage } from "../types/JimpImage.js";
+import type { JimpImage } from "../types/JimpImage.ts";
 
 /**
  * Draws a rectangle on the given image.

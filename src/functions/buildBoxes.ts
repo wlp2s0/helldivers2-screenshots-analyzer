@@ -1,4 +1,4 @@
-import { Box } from "../types/Box.js";
+import type { Box } from "../types/Box.ts";
 
 /**
  * Performs a flood fill algorithm to find the bounding box of a contiguous region in a 2D grid.

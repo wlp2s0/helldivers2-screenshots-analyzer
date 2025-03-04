@@ -1,6 +1,6 @@
-import { rgbaToInt, intToRGBA, BmpColor } from 'jimp';
-import { JimpImage } from '../types/JimpImage.js';
-import { Colour } from '../types/Colour.js';
+import { rgbaToInt, intToRGBA } from 'jimp';
+import type { JimpImage } from '../types/JimpImage.ts';
+import type { Colour } from '../types/Colour.ts';
 
 /**
  * Replaces a specified color in an image with a new color, within a given tolerance and margin.

@@ -1,17 +1,17 @@
+import type { TargetColour } from './types/TargetColour.ts';
+import type { JimpImage } from './types/JimpImage.ts';
+import type { Box } from './types/Box.ts';
 import { mkdir } from 'fs/promises';
 import { Jimp, rgbaToInt } from 'jimp';
-import { green, red, blue, yellow, magenta, cyan } from './constants/colours.js';
-import { buildBoxes } from './functions/buildBoxes.js';
-import { buildMask } from './functions/buildMask.js';
-import { cropImage } from './functions/cropImage.js';
-import { drawRectangle } from './functions/drawRectangle.js';
-import { getColorPercentage } from './functions/getColorPercentage.js';
-import { getThresholds } from './functions/getThresholds.js';
-import { mergeRectangles } from './functions/mergeRectangles.js';
-import { replaceColor } from './functions/replaceColor.js';
-import { TargetColour } from './types/TargetColour.js';
-import { JimpImage } from './types/JimpImage.js';
-import { Box } from './types/Box.js';
+import { green, red, blue, yellow, magenta, cyan } from './constants/colours.ts';
+import { buildBoxes } from './functions/buildBoxes.ts';
+import { buildMask } from './functions/buildMask.ts';
+import { cropImage } from './functions/cropImage.ts';
+import { drawRectangle } from './functions/drawRectangle.ts';
+import { getColorPercentage } from './functions/getColorPercentage.ts';
+import { getThresholds } from './functions/getThresholds.ts';
+import { mergeRectangles } from './functions/mergeRectangles.ts';
+import { replaceColor } from './functions/replaceColor.ts';
 
 const exposeIconInBox = (box: Box, originalImage: JimpImage, targetColor: TargetColour) => {
     const [x, y, w, h] = box;
