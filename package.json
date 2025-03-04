@@ -44,5 +44,5 @@
 			}
 		}
 	},
-	"types": "./dist/index.d.mts"
+	"types": "./dist/index.d.ts"
 }

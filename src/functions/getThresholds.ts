@@ -22,7 +22,7 @@ interface GetThresholdsArgs {
  * @param {number} args.minHeightThresholdRatio - The ratio to calculate the minimum height threshold.
  * @param {number} args.maxWidthThresholdRatio - The ratio to calculate the maximum width threshold.
  * @param {number} args.maxHeightThresholdRatio - The ratio to calculate the maximum height threshold.
- * 
+ *
  * @returns {Object} An object containing the calculated threshold values.
  * @returns {number} return.marginThreshold - The calculated margin threshold.
  * @returns {number} return.minMergeThreshold - The calculated minimum merge threshold.

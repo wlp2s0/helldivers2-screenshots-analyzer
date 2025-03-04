@@ -13,8 +13,6 @@ const generateDtsFiles = {
 		const dts = await fs.readFile("./dist/index.d.ts", "utf8");
 		await fs.writeFile("./dist/index.d.mts", dts);
 		await fs.writeFile("./dist/index.d.cts", dts);
-		// Original can be removed after copying
-		await fs.unlink("./dist/index.d.ts");
 	},
 };
 
@@ -42,7 +40,6 @@ export default {
 				rootDir: "./src",
 				removeComments: false,
 				declaration: true,
-				declarationDir: "./dist",
 				emitDeclarationOnly: true,
 				allowImportingTsExtensions: true,
 			},
