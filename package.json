@@ -8,7 +8,8 @@
 		"start": "node ./src/index.js",
 		"debug-screenshots": "node ./src/debugScreenshots.js",
 		"build": "rollup --config rollup.config.js",
-		"preversion": "npm run check && npm run build",
+		"lint": "biome check --write ./src",
+		"preversion": "npm run lint && npm run check && npm run build",
 		"postversion": "git push && git push --tags && npm publish",
 		"test": "node --test --experimental-strip-types --experimental-transform-types"
 	},
@@ -17,21 +18,20 @@
 	},
 	"devDependencies": {
 		"@babel/preset-env": "^7.26.9",
+		"@biomejs/biome": "1.9.4",
 		"@rollup/plugin-babel": "^6.0.4",
 		"@rollup/plugin-commonjs": "^28.0.2",
 		"@rollup/plugin-node-resolve": "^16.0.0",
 		"@rollup/plugin-terser": "^0.4.4",
 		"@rollup/plugin-typescript": "^12.1.2",
 		"@tsconfig/recommended": "^1.0.8",
-		"@types/node": "^22.13.8",
+		"@types/node": "^22.13.9",
 		"rollup": "^4.34.9",
 		"rollup-plugin-node-externals": "^8.0.0",
 		"tslib": "^2.8.1",
 		"typescript": "^5.8.2"
 	},
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"exports": {
 		".": {
 			"import": "./dist/index.mjs",

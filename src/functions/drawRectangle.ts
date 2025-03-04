@@ -12,23 +12,31 @@ import type { JimpImage } from "../types/JimpImage.ts";
  * @param {number} [thickness=2] - The thickness of the rectangle's border.
  * @returns The new image object with the rectangle drawn on it.
  */
-export function drawRectangle(originalImage: JimpImage, x: number, y: number, w: number, h: number, colorInt: number, thickness: number = 2): JimpImage {
-    const newImage = originalImage.clone()
+export function drawRectangle(
+	originalImage: JimpImage,
+	x: number,
+	y: number,
+	w: number,
+	h: number,
+	colorInt: number,
+	thickness = 2,
+): JimpImage {
+	const newImage = originalImage.clone();
 
-    // Draw top and bottom lines
-    for (let i = 0; i < thickness; i++) {
-        for (let xx = x; xx < x + w; xx++) {
-            newImage.setPixelColor(colorInt, xx, y + i);
-            newImage.setPixelColor(colorInt, xx, y + h - 1 - i);
-        }
-    }
-    // Draw left and right lines
-    for (let i = 0; i < thickness; i++) {
-        for (let yy = y; yy < y + h; yy++) {
-            newImage.setPixelColor(colorInt, x + i, yy);
-            newImage.setPixelColor(colorInt, x + w - 1 - i, yy);
-        }
-    }
+	// Draw top and bottom lines
+	for (let i = 0; i < thickness; i++) {
+		for (let xx = x; xx < x + w; xx++) {
+			newImage.setPixelColor(colorInt, xx, y + i);
+			newImage.setPixelColor(colorInt, xx, y + h - 1 - i);
+		}
+	}
+	// Draw left and right lines
+	for (let i = 0; i < thickness; i++) {
+		for (let yy = y; yy < y + h; yy++) {
+			newImage.setPixelColor(colorInt, x + i, yy);
+			newImage.setPixelColor(colorInt, x + w - 1 - i, yy);
+		}
+	}
 
-    return newImage
+	return newImage;
 }

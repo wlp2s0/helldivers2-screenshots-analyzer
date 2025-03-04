@@ -1,4 +1,4 @@
-import { rgbaToInt } from 'jimp';
+import { rgbaToInt } from "jimp";
 
 // Primary Colours
 export const red = rgbaToInt(255, 0, 0, 255);

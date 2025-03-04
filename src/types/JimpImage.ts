@@ -1,3 +1,3 @@
 import type { Jimp } from "jimp";
 
-export type JimpImage = Awaited<ReturnType<typeof Jimp["read"]>>
+export type JimpImage = Awaited<ReturnType<(typeof Jimp)["read"]>>;
