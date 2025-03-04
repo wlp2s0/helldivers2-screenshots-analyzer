@@ -4,6 +4,19 @@ import { babel } from "@rollup/plugin-babel";
 import terser from "@rollup/plugin-terser";
 import { nodeExternals } from "rollup-plugin-node-externals";
 import typescript from "@rollup/plugin-typescript";
+import fs from "node:fs/promises";
+
+const generateDtsFiles = {
+	name: "generate-dts-files",
+	closeBundle: async () => {
+		// Create appropriate d.ts files for each format
+		const dts = await fs.readFile("./dist/index.d.ts", "utf8");
+		await fs.writeFile("./dist/index.d.mts", dts);
+		await fs.writeFile("./dist/index.d.cts", dts);
+		// Original can be removed after copying
+		await fs.unlink("./dist/index.d.ts");
+	},
+};
 
 export default {
 	input: "src/index.ts",
@@ -29,6 +42,7 @@ export default {
 				rootDir: "./src",
 				removeComments: false,
 				declaration: true,
+				declarationDir: "./dist",
 				emitDeclarationOnly: true,
 				allowImportingTsExtensions: true,
 			},
@@ -38,5 +52,6 @@ export default {
 			presets: ["@babel/preset-env"],
 		}),
 		terser(),
+		generateDtsFiles,
 	],
 };
