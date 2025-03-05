@@ -3,6 +3,10 @@
 	"description": "A screenshots analyzer for Helldivers 2",
 	"name": "helldivers2-screenshots-analyzer",
 	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/wlp2s0/helldivers2-screenshots-analyzer"
+	},
 	"scripts": {
 		"check": "tsc --noEmit",
 		"start": "node ./src/index.js",
@@ -31,9 +35,7 @@
 		"tslib": "^2.8.1",
 		"typescript": "^5.8.2"
 	},
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"exports": {
 		".": {
 			"import": {
